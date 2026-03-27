@@ -19,17 +19,17 @@
 <body>
     <div class="glass-card">
         <h1>Almost Ready! 🚀</h1>
-        <p>BookMySeat is successfully deployed to Vercel, but it needs a <b>PostgreSQL Database</b> to store and show movie data.</p>
+        <p>BookMySeat is connected to your database, but it needs to create the <b>Tables</b> (Migrations) to show movie data.</p>
         
         <div class="setup-steps">
             <div class="step">
-                1. <b>Create Storage</b>: Go to the <b>Storage</b> tab in your Vercel Dashboard.
+                1. <b>Verify Link</b>: Go to the <b>Storage</b> tab in Vercel. Ensure your Postgres is marked as <b>"Linked"</b>.
             </div>
             <div class="step">
-                2. <b>Link Postgres</b>: Create a <b>Vercel Postgres</b> instance and click <b>"Link"</b> to connect it to this project.
+                2. <b>Trigger Build</b>: Go to <b>Deployments</b> -> Click your latest deployment -> Click <b>"Redeploy"</b>.
             </div>
             <div class="step">
-                3. <b>Redeploy</b>: Go to the <b>Deployments</b> tab and click <b>"Redeploy"</b>.
+                3. <b>Wait</b>: Our <code>build.sh</code> will automatically create the tables during the redeployment process.
             </div>
         </div>
 

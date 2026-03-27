@@ -5,7 +5,7 @@ from django.contrib.auth import login,authenticate
 from django.contrib.auth.decorators import login_required
 from movies.models import Movie , Booking
 
-from django.db import OperationalError
+from django.db import OperationalError, ProgrammingError
 
 def home(request):
     try:
@@ -17,8 +17,8 @@ def home(request):
             'activities': Movie.objects.filter(category='activity')[:4],
         }
         return render(request, 'home.html', context)
-    except OperationalError:
-        # If database is not configured (common on first Vercel deploy)
+    except (OperationalError, ProgrammingError):
+        # If database or tables are not configured
         return render(request, 'errors/db_not_configured.html')
 def register(request):
     if request.method == 'POST':
