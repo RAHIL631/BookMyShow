@@ -1,0 +1,90 @@
+{% extends "users/basic.html" %}
+
+{% block title %}Theaters for {{ movie.name }} - BookMySeat{% endblock %}
+
+{% block content %}
+<div class="container py-5 mt-4">
+    <div class="glass p-4 p-md-5 rounded-lg mb-5 fade-in">
+        <div class="row align-items-center">
+            <div class="col-md-2 d-none d-md-block">
+                <img src="{{ movie.image.url }}" alt="{{ movie.name }}" class="img-fluid rounded shadow">
+            </div>
+            <div class="col-md-10">
+                <h1 class="text-white font-weight-bold mb-2">{{ movie.name }}</h1>
+                <p class="text-muted mb-0"><i class="bi bi-star-fill text-warning mr-2"></i>{{ movie.rating }}/10</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-header mb-4">
+        <h2 class="section-title h4">Available Theaters</h2>
+    </div>
+
+    {% if theaters %}
+    {% for theater in theaters %}
+    <div class="glass rounded-lg p-4 mb-4 fade-in">
+        <div class="d-flex justify-content-between align-items-start flex-wrap">
+            <div class="mb-3 mb-md-0">
+                <h3 class="h5 text-white font-weight-bold mb-3">{{ theater.name }}</h3>
+                <div class="d-flex flex-wrap gap-3 text-muted small">
+                    <span class="mr-3"><i class="bi bi-phone text-success mr-1"></i> M-Ticket</span>
+                    <span class="mr-3"><i class="bi bi-cup-straw text-warning mr-1"></i> Food & Beverage</span>
+                    <span class="mr-3"><i class="bi bi-p-circle text-primary mr-1"></i> Parking</span>
+                </div>
+            </div>
+            <div class="text-md-right">
+                <div class="time-chips d-flex flex-wrap">
+                    <a href="{% url 'book_seats' theater.id %}" class="time-chip">
+                        <div class="time">{{ theater.time|date:"h:i A" }}</div>
+                        <div class="type small text-muted">4K DOLBY ATMOS</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="text-center py-5 glass rounded-lg">
+        <i class="bi bi-calendar-x display-4 text-muted mb-3"></i>
+        <h4 class="text-white">No Shows Available</h4>
+        <p class="text-muted">Stay tuned for upcoming showtimes.</p>
+    </div>
+    {% endif %}
+
+    <div class="mt-4 text-muted small">
+        <i class="bi bi-info-circle mr-2"></i> Cancellation policy depends on the theater. Non-refundable for most shows.
+    </div>
+</div>
+
+<style>
+    .time-chip {
+        display: block;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid var(--glass-border);
+        border-radius: 10px;
+        padding: 10px 20px;
+        text-align: center;
+        transition: 0.3s;
+        text-decoration: none !important;
+        min-width: 140px;
+        margin: 5px;
+    }
+    .time-chip:hover {
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+        transform: translateY(-3px);
+    }
+    .time-chip:hover .time { color: white !important; }
+    .time-chip:hover .type { color: rgba(255,255,255,0.7) !important; }
+    .time-chip .time {
+        color: var(--primary-color);
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+    .section-title {
+        color: white;
+        border-left: 4px solid var(--primary-color);
+        padding-left: 15px;
+    }
+</style>
+{% endblock %}

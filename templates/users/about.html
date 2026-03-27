@@ -1,0 +1,46 @@
+{% extends "users/basic.html" %}
+
+{% block title %}About Us - BookMySeat{% endblock %}
+
+{% block content %}
+<div class="container py-5 mt-5">
+    <div class="row align-items-center">
+        <div class="col-lg-6 mb-5 mb-lg-0 fade-in">
+            <h1 class="display-3 font-weight-bold text-white mb-4">About <span class="text-primary">BookMySeat</span></h1>
+            <p class="lead text-white-50 mb-4">
+                We are more than just a ticketing platform. We are the bridge between you and your next unforgettable experience.
+            </p>
+            <div class="glass-card p-4 mb-4">
+                <h4 class="text-white mb-3">Our Mission</h4>
+                <p class="text-muted mb-0">
+                    To provide seamless, premium access to the best movies, events, plays, and sports across the country. We believe in the power of live entertainment to bring people together.
+                </p>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <h2 class="text-primary font-weight-bold">10M+</h2>
+                    <p class="text-white-50">Tickets Sold</p>
+                </div>
+                <div class="col-6">
+                    <h2 class="text-primary font-weight-bold">500+</h2>
+                    <p class="text-white-50">Cities Covered</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 text-center fade-in">
+            <div class="position-relative d-inline-block">
+                <div class="glass-circle shadow-lg m-auto" style="width: 400px; height: 400px; background: linear-gradient(45deg, var(--primary-color), #8e2de2); opacity: 0.1;"></div>
+                <i class="bi bi-ticket-perforated display-1 text-primary position-absolute" style="top: 50%; left: 50%; transform: translate(-50%, -50%);"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .glass-circle {
+        border-radius: 50%;
+        border: 2px solid var(--glass-border);
+        backdrop-filter: blur(10px);
+    }
+</style>
+{% endblock %}

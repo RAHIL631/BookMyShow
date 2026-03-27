@@ -1,0 +1,61 @@
+{% extends "users/basic.html" %}
+
+{% block title %}Register - BookMySeat{% endblock %}
+
+{% block content %}
+<div class="container py-5 mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <div class="glass p-4 p-md-5 rounded-lg fade-in">
+                <div class="text-center mb-4">
+                    <h2 class="text-white font-weight-bold">Create Account</h2>
+                    <p class="text-muted small">Join us and start booking your favorite movies</p>
+                </div>
+
+                <form method="POST" novalidate>
+                    {% csrf_token %}
+                    <div class="row">
+                        {% for field in form %}
+                        <div class="col-md-{% if field.name == 'email' %}12{% else %}6{% endif %} mb-4">
+                            <label class="text-muted small font-weight-bold">{{ field.label }}</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-transparent border-right-0 rounded-left-pill text-muted">
+                                    <i class="bi bi-{% if field.name == 'username' %}person{% elif field.name == 'email' %}envelope{% elif 'password' in field.name %}lock{% else %}info-circle{% endif %}"></i>
+                                </span>
+                                <input type="{{ field.field.widget.input_type|default:'text' }}" 
+                                       name="{{ field.name }}" 
+                                       class="form-control bg-dark border-left-0 rounded-right-pill text-white" 
+                                       placeholder="{{ field.label }}" 
+                                       {% if field.field.required %}required{% endif %}>
+                            </div>
+                            {% if field.errors %}
+                            {% for error in field.errors %}
+                            <div class="text-danger small mt-1 pl-3"><i class="bi bi-x-circle mr-1"></i> {{ error }}</div>
+                            {% endfor %}
+                            {% endif %}
+                            {% if field.help_text %}
+                            <small class="form-text text-muted pl-3" style="font-size: 0.7rem;">{{ field.help_text|safe }}</small>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block rounded-pill py-2 font-weight-bold mt-2 mb-4">
+                        Register Now
+                    </button>
+                    
+                    <div class="text-center">
+                        <p class="text-muted small mb-0">Already have an account? <a href="{% url 'login' %}" class="text-primary text-decoration-none font-weight-bold">Sign In</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .input-group-text { border-color: var(--glass-border); }
+    .form-control { border-color: var(--glass-border); }
+    .form-control:focus { background: #111 !important; border-color: var(--primary-color); box-shadow: none; }
+</style>
+{% endblock %}

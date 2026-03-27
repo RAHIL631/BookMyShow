@@ -1,0 +1,70 @@
+{% extends "users/basic.html" %}
+
+{% block title %}Booking Successful - BookMySeat{% endblock %}
+
+{% block content %}
+<div class="container py-5 mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <div class="success-card glass p-5 fade-in">
+                <div class="success-icon mb-4">
+                    <i class="bi bi-check-circle-fill display-1 text-success"></i>
+                </div>
+                <h1 class="display-4 text-white font-weight-bold mb-3">Booking Confirmed!</h1>
+                <p class="lead text-muted mb-5">Your seats have been successfully booked. Pack your popcorn!</p>
+                
+                <div class="booking-details text-left mb-5 p-4 rounded bg-dark-soft border-glass">
+                    <div class="row">
+                        <div class="col-sm-4 text-muted">Movie:</div>
+                        <div class="col-sm-8 text-white font-weight-bold">{{ movie.name }}</div>
+                    </div>
+                    <hr class="border-glass">
+                    <div class="row">
+                        <div class="col-sm-4 text-muted">Theater:</div>
+                        <div class="col-sm-8 text-white">{{ theater.name }}</div>
+                    </div>
+                    <hr class="border-glass">
+                    <div class="row">
+                        <div class="col-sm-4 text-muted">Seats:</div>
+                        <div class="col-sm-8 text-white">
+                            {% for booking in bookings %}
+                                <span class="badge badge-primary mr-2">{{ booking.seat.seat_number }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <hr class="border-glass">
+                    <div class="row">
+                        <div class="col-sm-4 text-muted">Total Paid:</div>
+                        <div class="col-sm-8 text-white font-weight-bold">₹{{ total_price }}</div>
+                    </div>
+                </div>
+
+                <div class="actions d-flex justify-content-center gap-3">
+                    <a href="{% url 'profile' %}" class="btn btn-primary btn-lg px-4">View My Bookings</a>
+                    <a href="/" class="btn btn-outline-light btn-lg px-4 ml-3">Back to Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .success-card {
+        border-radius: 20px;
+        border: 1px solid var(--glass-border);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    }
+    .bg-dark-soft {
+        background: rgba(255, 255, 255, 0.03);
+    }
+    .border-glass {
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+    .success-icon i {
+        filter: drop-shadow(0 0 15px rgba(40, 167, 69, 0.4));
+    }
+    .display-1 {
+        font-size: 6rem;
+    }
+</style>
+{% endblock %}

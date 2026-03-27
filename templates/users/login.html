@@ -1,0 +1,81 @@
+{% extends "users/basic.html" %}
+
+{% block title %}Login - BookMySeat{% endblock %}
+
+{% block content %}
+<div class="container py-5 mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="glass p-4 p-md-5 rounded-lg fade-in">
+                <div class="text-center mb-4">
+                    <h2 class="text-white font-weight-bold">Welcome Back</h2>
+                    <p class="text-muted small">Enter your credentials to access your account</p>
+                </div>
+
+                <form method="POST" action="{% url 'login' %}">
+                    {% csrf_token %}
+                    <div class="form-group mb-4">
+                        <label class="text-muted small font-weight-bold">Username</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-transparent border-right-0 rounded-left-pill text-muted">
+                                <i class="bi bi-person"></i>
+                            </span>
+                            <input type="text" name="username" class="form-control bg-dark border-left-0 rounded-right-pill text-white" placeholder="Type your username" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label class="text-muted small font-weight-bold">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-transparent border-right-0 rounded-left-pill text-muted">
+                                <i class="bi bi-lock"></i>
+                            </span>
+                            <input type="password" name="password" id="id_password" class="form-control bg-dark border-left-0 rounded-right-pill text-white" placeholder="Type your password" required>
+                            <button class="btn btn-dark border-left-0 text-muted rounded-right-pill" type="button" id="togglePassword">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-4 small">
+                        <div class="custom-control custom-checkbox text-muted">
+                            <input type="checkbox" class="custom-control-input" id="rememberMe">
+                            <label class="custom-control-label" for="rememberMe">Remember me</label>
+                        </div>
+                        <a href="{% url 'password_reset' %}" class="text-primary text-decoration-none">Forgot Password?</a>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block rounded-pill py-2 font-weight-bold mb-4">
+                        Sign In
+                    </button>
+                    
+                    <div class="text-center">
+                        <p class="text-muted small mb-0">New here? <a href="{% url 'register' %}" class="text-primary text-decoration-none font-weight-bold">Create an account</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .input-group-text { border-color: var(--glass-border); color: var(--text-muted); }
+    .form-control { border-color: var(--glass-border); }
+    .form-control:focus { background: #111 !important; border-color: var(--primary-color); box-shadow: none; }
+    .input-group-text i { font-size: 1.1rem; }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggleBtn = document.getElementById('togglePassword');
+        const passwordField = document.getElementById('id_password');
+        
+        toggleBtn.addEventListener('click', function() {
+            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
+            this.querySelector('i').classList.toggle('bi-eye');
+            this.querySelector('i').classList.toggle('bi-eye-slash');
+        });
+    });
+</script>
+{% endblock %}

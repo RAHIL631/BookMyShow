@@ -1,0 +1,190 @@
+{% extends "users/basic.html" %}
+
+{% block title %}Select Seats - {{ theaters.movie.name }}{% endblock %}
+
+{% block content %}
+<div class="container py-5 mt-4">
+    <div class="row">
+        <div class="col-lg-9 mx-auto">
+            <!-- Movie and Theater Info -->
+            <div class="glass p-4 rounded-lg mb-4 fade-in">
+                <div class="d-flex justify-content-between align-items-center flex-wrap">
+                    <div>
+                        <h2 class="text-white font-weight-bold mb-1">{{ theaters.movie.name }}</h2>
+                        <p class="text-muted mb-0">{{ theaters.name }} | {{ theaters.time|date:"D, d M | h:i A" }}</p>
+                    </div>
+                    <div class="mt-3 mt-sm-0">
+                        <span class="badge badge-outline px-3 py-2 text-muted">4K DOLBY ATMOS</span>
+                    </div>
+                </div>
+            </div>
+
+            {% if error %}
+            <div class="alert alert-danger glass border-danger text-white mb-4 slide-in">
+                <i class="bi bi-exclamation-triangle-fill mr-2"></i> {{ error }}
+            </div>
+            {% endif %}
+
+            <!-- Seat Selection -->
+            <div class="glass p-4 p-md-5 rounded-lg mb-5 fade-in">
+                <div class="screen-container mb-5">
+                    <div class="screen text-center small text-muted">SCREEN THIS WAY</div>
+                </div>
+
+                <form method="POST" id="bookingForm">
+                    {% csrf_token %}
+                    <div class="seat-grid d-flex justify-content-center flex-wrap mb-5">
+                        {% for seat in seats %}
+                        <div class="seat-wrapper">
+                            <input type="checkbox" name="seats" value="{{ seat.id }}" id="seat-{{ seat.id }}" 
+                                   class="seat-input d-none" {% if seat.is_booked %}disabled{% endif %}>
+                            <label for="seat-{{ seat.id }}" class="seat-label {% if seat.is_booked %}sold{% endif %}" 
+                                   title="Seat {{ seat.seat_number }}">
+                                {{ seat.seat_number }}
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Seat Legend -->
+                    <div class="d-flex justify-content-center gap-4 flex-wrap mb-5 legend">
+                        <div class="d-flex align-items-center">
+                            <div class="seat-sample available"></div>
+                            <span class="ml-2 text-muted small">Available</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="seat-sample selected"></div>
+                            <span class="ml-2 text-muted small">Selected</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="seat-sample sold"></div>
+                            <span class="ml-2 text-muted small">Sold Out</span>
+                        </div>
+                    </div>
+
+                    <!-- Book Button -->
+                    <div class="booking-bar glass p-3 rounded-lg d-flex justify-content-between align-items-center">
+                        <div class="selection-info">
+                            <h4 class="text-white mb-0"><span id="seatCount">0</span> Seats Selected</h4>
+                            <p class="text-primary mb-0 font-weight-bold">Total: ₹<span id="totalPrice">0</span></p>
+                        </div>
+                        <button type="submit" class="btn btn-primary px-5 py-3 font-weight-bold" id="bookBtn" disabled>
+                            Proceed to Book
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .screen-container {
+        perspective: 500px;
+        margin-bottom: 60px !important;
+    }
+    .screen {
+        height: 12px;
+        background: var(--primary-color);
+        box-shadow: 0 10px 20px rgba(248, 68, 100, 0.4);
+        transform: rotateX(-45deg);
+        width: 80%;
+        margin: 0 auto;
+        position: relative;
+    }
+    .screen::after {
+        content: "SCREEN";
+        position: absolute;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 0.7rem;
+        letter-spacing: 5px;
+        color: var(--text-muted);
+    }
+    
+    .seat-grid {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    .seat-wrapper { margin: 5px; }
+    .seat-label {
+        width: 35px;
+        height: 35px;
+        border: 1px solid var(--primary-color);
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 0.75rem;
+        color: var(--primary-color);
+        transition: 0.2s;
+        margin: 0;
+    }
+    .seat-label:hover:not(.sold) {
+        background: rgba(248, 68, 100, 0.1);
+        transform: scale(1.1);
+    }
+    .seat-input:checked + .seat-label {
+        background: var(--primary-color);
+        color: white;
+        box-shadow: 0 0 10px rgba(248, 68, 100, 0.5);
+    }
+    .seat-label.sold {
+        background: var(--glass-bg);
+        border-color: var(--glass-border);
+        color: #444;
+        cursor: not-allowed;
+    }
+    
+    .seat-sample {
+        width: 15px;
+        height: 15px;
+        border-radius: 3px;
+    }
+    .seat-sample.available { border: 1px solid var(--primary-color); }
+    .seat-sample.selected { background: var(--primary-color); }
+    .seat-sample.sold { background: var(--glass-bg); border: 1px solid var(--glass-border); }
+
+    @media (max-width: 576px) {
+        .seat-grid {
+            gap: 5px !important;
+            padding: 10px !important;
+        }
+        .seat-label {
+            width: 25px !important;
+            height: 25px !important;
+            font-size: 0.6rem !important;
+            line-height: 25px !important;
+        }
+    }
+    
+    .booking-bar {
+        border: 1px solid var(--glass-border);
+    }
+    .badge-outline {
+        border: 1px solid var(--glass-border);
+        border-radius: 5px;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const checkboxes = document.querySelectorAll('.seat-input');
+        const countSpan = document.getElementById('seatCount');
+        const priceSpan = document.getElementById('totalPrice');
+        const bookBtn = document.getElementById('bookBtn');
+        const PRICE_PER_SEAT = 250;
+        
+        checkboxes.forEach(cb => {
+            cb.addEventListener('change', () => {
+                const selectedCount = document.querySelectorAll('.seat-input:checked').length;
+                countSpan.textContent = selectedCount;
+                priceSpan.textContent = selectedCount * PRICE_PER_SEAT;
+                bookBtn.disabled = selectedCount === 0;
+            });
+        });
+    });
+</script>
+{% endblock %}

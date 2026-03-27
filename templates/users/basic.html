@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}BookMySeat - Premium Cinema Experience{% endblock %}</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap and Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <style>
+      :root {
+        --primary-color: #f84464;
+        --bg-dark: #121212;
+        --bg-card: #1e1e1e;
+        --glass-bg: rgba(255, 255, 255, 0.05);
+        --glass-border: rgba(255, 255, 255, 0.1);
+        --text-main: #e0e0e0;
+        --text-muted: #a0a0a0;
+      }
+
+      body {
+        font-family: 'Outfit', sans-serif;
+        background-color: var(--bg-dark);
+        color: var(--text-main);
+        overflow-x: hidden;
+      }
+
+      /* Premium Glassmorphism Effect */
+      .glass {
+        background: var(--glass-bg);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--glass-border);
+      }
+
+      .navbar {
+        background: rgba(18, 18, 18, 0.95) !important;
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--glass-border);
+        padding: 15px 0;
+      }
+
+      .navbar-brand {
+        font-weight: 700;
+        font-size: 1.5rem;
+        color: var(--primary-color) !important;
+        letter-spacing: -0.5px;
+      }
+
+      .nav-link {
+        color: var(--text-main) !important;
+        font-weight: 500;
+        transition: 0.3s;
+        margin: 0 10px;
+        position: relative;
+      }
+
+      .nav-link::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -5px;
+        left: 0;
+        background-color: var(--primary-color);
+        transition: 0.3s;
+      }
+
+      .nav-link:hover::after {
+        width: 100%;
+      }
+
+      .nav-link:hover {
+        color: var(--primary-color) !important;
+      }
+
+      .search-box {
+        background: var(--bg-card);
+        border: 1px solid var(--glass-border);
+        border-radius: 20px;
+        padding: 5px 15px;
+        display: flex;
+        align-items: center;
+        transition: 0.3s;
+      }
+
+      .search-box:focus-within {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 10px rgba(248, 68, 100, 0.2);
+      }
+
+      .search-box input {
+        background: transparent;
+        border: none;
+        color: white;
+        padding-left: 10px;
+        width: 200px;
+      }
+
+      .search-box input:focus {
+        outline: none;
+      }
+
+      .btn-primary {
+        background-color: var(--primary-color);
+        border: none;
+        border-radius: 30px;
+        font-weight: 600;
+        padding: 10px 25px;
+        transition: 0.3s;
+      }
+
+      .btn-primary:hover {
+        background-color: #df3854;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(248, 68, 100, 0.4);
+      }
+
+      .footer {
+        background-color: #0b0b0b;
+        padding: 60px 0 30px;
+        border-top: 1px solid var(--glass-border);
+      }
+
+      .footer h5 {
+        font-weight: 700;
+        margin-bottom: 25px;
+        color: white;
+      }
+
+      .footer a {
+        color: var(--text-muted);
+        transition: 0.3s;
+      }
+
+      .footer a:hover {
+        color: var(--primary-color);
+        text-decoration: none;
+      }
+
+      .social-icons i {
+        font-size: 20px;
+        margin-right: 20px;
+        color: var(--text-muted);
+        transition: 0.3s;
+      }
+
+      .social-icons i:hover {
+        color: var(--primary-color);
+        transform: scale(1.2);
+      }
+
+      /* Animation classes */
+      .fade-in {
+        animation: fadeIn 0.8s ease-in-out;
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+      <div class="container">
+        <a class="navbar-brand" href="/">
+          <i class="bi bi-ticket-perforated-fill mr-2"></i>BookMySeat
+        </a>
+        
+        <form class="search-box d-none d-lg-flex ml-4" action="/movies/" method="GET">
+          <i class="bi bi-search text-muted"></i>
+          <input type="text" name="search" placeholder="Search for Movies, Events...">
+        </form>
+
+        <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ml-auto align-items-center">
+            <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="/movies">Movies</a></li>
+            {% if user.is_authenticated %}
+            <li class="nav-item"><a class="nav-link" href="{% url 'profile' %}">Profile</a></li>
+            <li class="nav-item ml-lg-3">
+              <form method="Post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary btn-sm">Logout</button>
+              </form>
+            </li>
+            {% else %}
+            <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+            <li class="nav-item ml-lg-3"><a class="btn btn-primary" href="{% url 'register' %}">Register</a></li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Sub Navigation -->
+    <div class="bg-dark border-bottom border-secondary d-none d-md-block py-2">
+      <div class="container d-flex justify-content-between">
+        <div class="d-flex small font-weight-bold">
+          <a href="/movies" class="text-white mr-4 text-decoration-none hover-primary {% if active_category == 'movie' %}text-primary-important{% endif %}">Movies</a>
+          <a href="{% url 'events' %}" class="text-white mr-4 text-decoration-none hover-primary {% if active_category == 'event' %}text-primary-important{% endif %}">Events</a>
+          <a href="{% url 'plays' %}" class="text-white mr-4 text-decoration-none hover-primary {% if active_category == 'play' %}text-primary-important{% endif %}">Plays</a>
+          <a href="{% url 'sports' %}" class="text-white mr-4 text-decoration-none hover-primary {% if active_category == 'sport' %}text-primary-important{% endif %}">Sports</a>
+          <a href="{% url 'activities' %}" class="text-white text-decoration-none hover-primary {% if active_category == 'activity' %}text-primary-important{% endif %}">Activities</a>
+        </div>
+        <div class="d-flex small font-weight-bold">
+          <a href="#" class="text-white ml-4 text-decoration-none hover-primary">Offers</a>
+          <a href="#" class="text-white ml-4 text-decoration-none hover-primary">Gift Cards</a>
+        </div>
+      </div>
+    </div>
+
+    <style>
+      .text-primary-important { color: var(--primary-color) !important; }
+      .hover-primary:hover { color: var(--primary-color) !important; }
+    </style>
+
+    <div class="container-fluid p-0">
+      {% block content %} {% endblock %}
+    </div>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4 mb-4">
+            <h5>About BookMySeat</h5>
+            <p class="text-muted">
+              Premium movie booking platform providing the most seamless cinema mapping and reservation experience.
+            </p>
+            <div class="social-icons">
+              <a href="#"><i class="fab fa-facebook"></i></a>
+              <a href="#"><i class="fab fa-twitter"></i></a>
+              <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+          </div>
+          <div class="col-md-2 mb-4">
+            <h5>Quick Links</h5>
+            <ul class="list-unstyled">
+              <li><a href="/">Home</a></li>
+              <li><a href="/movies">Movies</a></li>
+              <li><a href="{% url 'about' %}">About Us</a></li>
+            </ul>
+          </div>
+          <div class="col-md-2 mb-4">
+            <h5>Support</h5>
+            <ul class="list-unstyled">
+              <li><a href="#">Help Center</a></li>
+              <li><a href="{% url 'contact' %}">Contact Us</a></li>
+              <li><a href="#">Terms of Use</a></li>
+            </ul>
+          </div>
+          <div class="col-md-4">
+            <h5>Subscribe for Updates</h5>
+            <div class="input-group mb-3">
+              <input type="text" class="form-control bg-dark border-secondary text-white" placeholder="Email Address">
+              <div class="input-group-append">
+                <button class="btn btn-primary" type="button">Join</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr class="border-secondary mt-5">
+        <div class="text-center text-muted small">
+          <p>&copy; 2024 BookMySeat. Crafted for the best movie experience.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  </body>
+</html>

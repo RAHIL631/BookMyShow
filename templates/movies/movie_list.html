@@ -1,0 +1,115 @@
+{% extends "users/basic.html" %}
+
+{% block title %}Movies - BookMySeat{% endblock %}
+
+{% block content %}
+<div class="container py-5 mt-4">
+    <div class="row">
+        <!-- Sidebar Filters -->
+        <div class="col-lg-3 d-none d-lg-block">
+            <div class="glass p-4 rounded-15 mb-4 sticky-top" style="top: 100px;">
+                <h4 class="text-white mb-4">Filters</h4>
+                
+                <div class="filter-section mb-4">
+                    <h6 class="text-muted text-uppercase small font-weight-bold mb-3">Categories</h6>
+                    <div class="list-group list-group-flush bg-transparent">
+                        <a href="/movies" class="list-group-item bg-transparent text-white border-0 px-0 hover-primary {% if not active_category %}text-primary-important{% endif %}">All Productions</a>
+                        <a href="{% url 'events' %}" class="list-group-item bg-transparent text-white border-0 px-0 hover-primary {% if active_category == 'event' %}text-primary-important{% endif %}">Events</a>
+                        <a href="{% url 'plays' %}" class="list-group-item bg-transparent text-white border-0 px-0 hover-primary {% if active_category == 'play' %}text-primary-important{% endif %}">Plays</a>
+                        <a href="{% url 'sports' %}" class="list-group-item bg-transparent text-white border-0 px-0 hover-primary {% if active_category == 'sport' %}text-primary-important{% endif %}">Sports</a>
+                        <a href="{% url 'activities' %}" class="list-group-item bg-transparent text-white border-0 px-0 hover-primary {% if active_category == 'activity' %}text-primary-important{% endif %}">Activities</a>
+                    </div>
+                </div>
+
+                <div class="filter-section mb-4">
+                    <h6 class="text-muted text-uppercase small font-weight-bold mb-3">Languages</h6>
+                    <div class="list-group list-group-flush bg-transparent">
+                        <a href="?{% if active_category %}category={{ active_category }}&{% endif %}language=English" class="list-group-item bg-transparent text-white border-0 px-0 hover-primary {% if active_language == 'English' %}text-primary-important{% endif %}">English</a>
+                        <a href="?{% if active_category %}category={{ active_category }}&{% endif %}language=Hindi" class="list-group-item bg-transparent text-white border-0 px-0 hover-primary {% if active_language == 'Hindi' %}text-primary-important{% endif %}">Hindi</a>
+                        {% if active_language %}
+                        <a href="?{% if active_category %}category={{ active_category }}{% endif %}" class="list-group-item bg-transparent text-muted border-0 px-0 small mt-2">Clear Language</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Movie Grid -->
+        <div class="col-lg-9">
+            <div class="section-header mb-5 d-flex justify-content-between align-items-center">
+                <h1 class="section-title text-capitalize m-0">
+                    {% if active_category %}
+                        {% if active_category == 'activity' %}Activities{% else %}{{ active_category }}s{% endif %}
+                    {% else %}
+                        All Productions
+                    {% endif %}
+                </h1>
+                <span class="text-muted d-none d-md-inline">{{ movies|length }} Items found</span>
+            </div>
+
+            <div class="row" id="movieList">
+        {% for movie in movies %}
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4 fade-in">
+            <a href="{% url 'movie_detail' movie.id %}" class="text-decoration-none">
+                <div class="movie-card h-100 position-relative">
+                    <div class="rating-badge">
+                        <i class="bi bi-star-fill"></i> {{ movie.rating }}
+                    </div>
+                    <img src="{{ movie.image.url }}" class="card-img-top" alt="{{ movie.name }}" style="height: 380px; object-fit: cover;" onerror="this.src='https://picsum.photos/seed/{{ movie.id }}/380/550'">
+                    <div class="p-3">
+                        <h5 class="text-white mb-1">{{ movie.name }}</h5>
+                        <p class="text-muted small mb-3">Cast: {{ movie.cast|truncatechars:30 }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="view-all small">Explore <i class="bi bi-chevron-right"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <div class="glass p-5 rounded-circle d-inline-block mb-4">
+                <i class="bi bi-search display-1 text-muted"></i>
+            </div>
+            <h3 class="text-white">Not found</h3>
+            <p class="text-muted">No movies found matching your criteria.</p>
+            <a href="/movies" class="btn btn-primary mt-3">Refresh List</a>
+        </div>
+        {% endfor %}
+        </div> <!-- End col-lg-9 -->
+    </div> <!-- End row -->
+</div>
+
+<style>
+    .movie-card {
+        background: var(--bg-card);
+        border: 1px solid var(--glass-border);
+        border-radius: 15px;
+        overflow: hidden;
+        transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .movie-card:hover {
+        transform: scale(1.03);
+        border-color: var(--primary-color);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .rating-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(0,0,0,0.7);
+        backdrop-filter: blur(5px);
+        padding: 5px 12px;
+        border-radius: 8px;
+        color: #f5c518;
+        font-weight: 700;
+        font-size: 0.9rem;
+        z-index: 2;
+    }
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: white;
+    }
+</style>
+{% endblock %}

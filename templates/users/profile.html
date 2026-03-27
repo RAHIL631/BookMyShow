@@ -1,0 +1,118 @@
+{% extends "users/basic.html" %}
+
+{% block title %}My Profile - BookMySeat{% endblock %}
+
+{% block content %}
+<div class="container py-5 mt-4">
+    <div class="row">
+        <div class="col-lg-4 mb-4">
+            <!-- User Info Sidebar -->
+            <div class="glass p-4 rounded-lg text-center fade-in">
+                <div class="mb-4">
+                    <div class="profile-avatar mx-auto">
+                        <i class="bi bi-person-circle display-1 text-primary"></i>
+                    </div>
+                </div>
+                <h3 class="text-white font-weight-bold mb-1">{{ user.username }}</h3>
+                <p class="text-muted small mb-4">{{ user.email }}</p>
+                
+                <div class="d-grid gap-2">
+                    <a href="{% url 'password_reset' %}" class="btn btn-outline-secondary btn-sm btn-block">
+                        <i class="bi bi-shield-lock mr-2"></i>Reset Password
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-8">
+            <!-- Bookings Section -->
+            <div class="section-header mb-4">
+                <h2 class="section-title h4">Your Bookings</h2>
+            </div>
+            
+            <div class="row">
+                {% if bookings %}
+                {% for booking in bookings %}
+                <div class="col-md-6 mb-4 fade-in">
+                    <div class="glass p-3 rounded-lg h-100 booking-card">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <h5 class="text-white font-weight-bold mb-0">{{ booking.movie.name }}</h5>
+                            <span class="badge badge-primary small">Confirmed</span>
+                        </div>
+                        <div class="text-muted small">
+                            <p class="mb-1"><i class="bi bi-geo-alt mr-2"></i>{{ booking.theater.name }}</p>
+                            <p class="mb-1"><i class="bi bi-layout-three-columns mr-2"></i>Seat: {{ booking.seat.seat_number }}</p>
+                            <p class="mb-0"><i class="bi bi-calendar-check mr-2"></i>{{ booking.booked_at|date:"D, d M Y | h:i A" }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="col-12">
+                    <div class="glass p-5 rounded-lg text-center text-muted">
+                        <i class="bi bi-ticket-detailed display-4 mb-3"></i>
+                        <p>No bookings found. Time to catch a movie!</p>
+                        <a href="/movies" class="btn btn-primary btn-sm mt-2">Explore Movies</a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Profile Settings -->
+            <div class="section-header mt-5 mb-4">
+                <h2 class="section-title h4">Account Settings</h2>
+            </div>
+            <div class="glass p-4 rounded-lg fade-in">
+                <form method="POST">
+                    {% csrf_token %}
+                    {% for field in u_form %}
+                    <div class="form-group">
+                        <label class="text-muted small font-weight-bold">{{ field.label }}</label>
+                        <input type="{{ field.field.widget.input_type|default:'text' }}" 
+                               name="{{ field.name }}" 
+                               value="{{ field.value|default:'' }}"
+                               class="form-control bg-dark border-secondary text-white rounded-pill px-4">
+                        {% if field.errors %}
+                        <div class="text-danger small mt-1">{{ field.errors }}</div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-primary px-5 rounded-pill font-weight-bold mt-3">
+                        Save Changes
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+        background: rgba(248, 68, 100, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .booking-card {
+        border-left: 3px solid var(--primary-color) !important;
+        transition: 0.3s;
+    }
+    .booking-card:hover {
+        background: rgba(255, 255, 255, 0.08);
+        transform: translateY(-2px);
+    }
+    .section-title {
+        color: white;
+        border-left: 4px solid var(--primary-color);
+        padding-left: 15px;
+    }
+    .form-control:focus {
+        background-color: #1a1a1a !important;
+        border-color: var(--primary-color);
+        box-shadow: none;
+    }
+</style>
+{% endblock %}

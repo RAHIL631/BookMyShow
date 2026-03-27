@@ -1,0 +1,246 @@
+{% extends "users/basic.html" %}
+
+{% block title %}BookMySeat - Movie Tickets, Plays, Sports & Events{% endblock %}
+
+{% block content %}
+<style>
+    .hero-carousel .carousel-item {
+        height: 500px;
+        background-color: var(--bg-dark);
+    }
+    .hero-carousel .carousel-item img {
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.7;
+    }
+    .carousel-caption {
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(5px);
+        border-radius: 20px;
+        bottom: 100px;
+        padding: 30px;
+        border: 1px solid var(--glass-border);
+    }
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 50px 0 30px;
+    }
+    .section-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0;
+        color: white;
+    }
+    .view-all {
+        color: var(--primary-color);
+        font-weight: 600;
+        text-decoration: none !important;
+    }
+    .movie-card {
+        background: var(--bg-card);
+        border: 1px solid var(--glass-border);
+        border-radius: 15px;
+        overflow: hidden;
+        transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .movie-card:hover {
+        transform: scale(1.03);
+        border-color: var(--primary-color);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .movie-card img {
+        height: 380px;
+        object-fit: cover;
+    }
+    .rating-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(0,0,0,0.7);
+        backdrop-filter: blur(5px);
+        padding: 5px 12px;
+        border-radius: 8px;
+        color: #f5c518;
+        font-weight: 700;
+        font-size: 0.9rem;
+    }
+    .event-card {
+        border-radius: 12px;
+        overflow: hidden;
+        height: 200px;
+        position: relative;
+    }
+    .event-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: 0.5s;
+    }
+    .event-card:hover img {
+        transform: scale(1.1);
+    }
+    .event-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 15px;
+        background: linear-gradient(transparent, rgba(0,0,0,0.9));
+        color: white;
+        font-weight: 600;
+    }
+</style>
+
+<div id="heroCarousel" class="carousel slide hero-carousel" data-ride="carousel">
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <img src="https://assets-in.bmscdn.com/promotions/cms/creatives/1728390794440_bandlanddesktop.jpg" class="d-block w-100" alt="Bandland">
+            <div class="carousel-caption d-none d-md-block fade-in">
+                <h2 class="display-4 font-weight-bold">Bandland 2024</h2>
+                <p>The biggest music festival of the year is here!</p>
+                <div class="d-flex justify-content-center mt-4">
+                    <form action="/movies/" method="GET" class="search-box-hero w-75">
+                        <div class="input-group">
+                            <input type="text" name="search" class="form-control glass" placeholder="Search for Movies, Events, Plays...">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary px-4" type="submit">Search</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <img src="https://assets-in.bmscdn.com/promotions/cms/creatives/1726036566435_playcardnewweb.jpg" class="d-block w-100" alt="Playcard">
+            <div class="carousel-caption d-none d-md-block">
+                <h2 class="h1 font-weight-bold">Live Theater & Plays</h2>
+                <p>Experience the magic of live performance.</p>
+                <a href="{% url 'plays' %}" class="btn btn-primary mt-2">Book Tickets</a>
+            </div>
+        </div>
+    </div>
+    <a class="carousel-control-prev" href="#heroCarousel" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+    </a>
+    <a class="carousel-control-next" href="#heroCarousel" role="button" data-slide="next">
+        <span class="carousel-control-next-icon"></span>
+    </a>
+</div>
+
+<div class="container mb-5">
+    <!-- Recommended Movies -->
+    <div class="section-header">
+        <h2 class="section-title">Recommended Movies</h2>
+        <a href="/movies" class="view-all">View All <i class="bi bi-chevron-right ml-1"></i></a>
+    </div>
+    <div class="row">
+        {% for movie in recommended_movies %}
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <a href="{% url 'movie_detail' movie.id %}" class="text-decoration-none">
+                <div class="movie-card h-100 position-relative">
+                    <div class="rating-badge">
+                        <i class="bi bi-star-fill"></i> {{ movie.rating }}
+                    </div>
+                    <img src="{{ movie.image.url }}" class="card-img-top" alt="{{ movie.name }}" onerror="this.src='https://picsum.photos/seed/{{ movie.id }}/380/550'">
+                    <div class="p-3">
+                        <h5 class="text-white mb-1">{{ movie.name }}</h5>
+                        <p class="text-muted small mb-0">{{ movie.description|truncatechars:50 }}</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <p class="text-muted">No movies in this category yet.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Live Events -->
+    <div class="section-header">
+        <h2 class="section-title">Live Events</h2>
+        <a href="{% url 'events' %}" class="view-all">View All <i class="bi bi-chevron-right ml-1"></i></a>
+    </div>
+    <div class="row">
+        {% for event in events %}
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <a href="{% url 'movie_detail' event.id %}" class="text-decoration-none">
+                <div class="movie-card h-100 position-relative">
+                    <img src="{{ event.image.url }}" class="card-img-top" alt="{{ event.name }}" onerror="this.src='https://picsum.photos/seed/event-{{ event.id }}/380/550'">
+                    <div class="p-3">
+                        <h5 class="text-white mb-1">{{ event.name }}</h5>
+                        <p class="text-muted small mb-0">{{ event.description|truncatechars:50 }}</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% empty %}
+        {% for i in "1234"|make_list %}
+        <div class="col-lg-3 col-md-4 col-6 mb-4 opacity-50">
+            <div class="event-card glass">
+                <img src="https://picsum.photos/seed/event{{i}}/400/300" alt="Event">
+                <div class="event-overlay small">Upcoming Event {{i}}</div>
+            </div>
+        </div>
+        {% endfor %}
+        {% endfor %}
+    </div>
+
+    <!-- Plays -->
+    {% if plays %}
+    <div class="section-header">
+        <h2 class="section-title">Plays</h2>
+        <a href="{% url 'plays' %}" class="view-all">View All <i class="bi bi-chevron-right ml-1"></i></a>
+    </div>
+    <div class="row">
+        {% for play in plays %}
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <a href="{% url 'movie_detail' play.id %}" class="text-decoration-none">
+                <div class="movie-card h-100 position-relative">
+                    <img src="{{ play.image.url }}" class="card-img-top" alt="{{ play.name }}" onerror="this.src='https://picsum.photos/seed/play-{{ play.id }}/380/550'">
+                    <div class="p-3">
+                        <h5 class="text-white mb-1">{{ play.name }}</h5>
+                        <p class="text-muted small mb-0">{{ play.description|truncatechars:50 }}</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Sports -->
+    {% if sports %}
+    <div class="section-header">
+        <h2 class="section-title">Sports</h2>
+        <a href="{% url 'sports' %}" class="view-all">View All <i class="bi bi-chevron-right ml-1"></i></a>
+    </div>
+    <div class="row">
+        {% for sport in sports %}
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <a href="{% url 'movie_detail' sport.id %}" class="text-decoration-none">
+                <div class="movie-card h-100 position-relative">
+                    <img src="{{ sport.image.url }}" class="card-img-top" alt="{{ sport.name }}" onerror="this.src='https://picsum.photos/seed/sport-{{ sport.id }}/380/550'">
+                    <div class="p-3">
+                        <h5 class="text-white mb-1">{{ sport.name }}</h5>
+                        <p class="text-muted small mb-0">{{ sport.description|truncatechars:50 }}</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('.movie-card').hover(
+            function() { $(this).find('img').css('opacity', '0.9'); },
+            function() { $(this).find('img').css('opacity', '1'); }
+        );
+    });
+</script>
+{% endblock %}

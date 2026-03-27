@@ -1,0 +1,112 @@
+{% extends "users/basic.html" %}
+
+{% block title %}{{ movie.name }} - BookMySeat{% endblock %}
+
+{% block content %}
+<style>
+    .movie-header {
+        position: relative;
+        padding: 60px 0;
+        background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('{{ movie.image.url }}');
+        background-size: cover;
+        background-position: center;
+        color: white;
+        border-radius: 15px;
+        margin-top: 20px;
+        overflow: hidden;
+    }
+    .movie-poster {
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        max-width: 100%;
+    }
+    .badge-rating {
+        background-color: #f5c518;
+        color: #000;
+        font-weight: bold;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+    .btn-book {
+        background: #f84464;
+        border: none;
+        padding: 12px 30px;
+        font-weight: bold;
+        font-size: 1.1rem;
+        transition: transform 0.2s;
+    }
+    .btn-book:hover {
+        background: #df3854;
+        transform: scale(1.05);
+    }
+    .section-title {
+        border-left: 5px solid #f84464;
+        padding-left: 15px;
+        margin: 30px 0 20px;
+        font-weight: bold;
+    }
+    .glass-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        padding: 20px;
+    }
+</style>
+
+<div class="movie-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-4">
+                <img src="{{ movie.image.url }}" alt="{{ movie.name }}" class="movie-poster">
+            </div>
+            <div class="col-md-8">
+                <h1 class="display-4 font-weight-bold">{{ movie.name }}</h1>
+                <div class="mb-3">
+                    <span class="badge-rating"><i class="bi bi-star-fill"></i> {{ movie.rating }}/10</span>
+                </div>
+                <p class="lead">{{ movie.description|default:"No description available." }}</p>
+                <div class="mt-4">
+                    <a href="{% url 'theater_list' movie.id %}" class="btn btn-primary btn-book">Book Tickets</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-5 mb-5">
+    <div class="row">
+        <div class="col-md-8">
+            <h3 class="section-title">About the Movie</h3>
+            <p class="text-muted" style="line-height: 1.8;">
+                {{ movie.description }}
+            </p>
+            
+            <h3 class="section-title">Cast</h3>
+            <div class="row">
+                {% for actor in movie.cast.split|slice:":6" %}
+                <div class="col-md-4 col-6 mb-3">
+                    <div class="glass-card text-center">
+                        <div class="h5 mb-0 text-white">{{ actor }}</div>
+                        <small class="text-muted">Actor</small>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-muted px-3">Cast information not specified.</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-card shadow-sm">
+                <h4 class="mb-3 text-white">Movie Info</h4>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><strong class="text-white-50">Release Date:</strong> <span class="text-white">{{ movie.release_date|date:"d M Y" }}</span></li>
+                    <li class="mb-2"><strong class="text-white-50">Duration:</strong> <span class="text-white">{{ movie.duration }}</span></li>
+                    <li class="mb-2"><strong class="text-white-50">Language:</strong> <span class="text-white">{{ movie.language }}</span></li>
+                    <li class="mb-2"><strong class="text-white-50">Genre:</strong> <span class="text-white">{{ movie.genre }}</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
