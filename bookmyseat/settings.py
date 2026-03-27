@@ -93,19 +93,15 @@ DATABASE_URL = config('POSTGRES_URL',
 
 if DATABASE_URL:
     # Ensure the URL is correctly formatted for dj-database-url
-    # If Vercel provides 'postgres://', dj-database-url handles it.
     DATABASES = {
         'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600, conn_health_checks=True)
     }
-elif os.environ.get('VERCEL') == '1' or not DEBUG:
-    # If we are on Vercel or in production mode but no DB URL is found,
-    # we raise an error to prevent falling back to local SQLite which 
-    # will always fail on Vercel's read-only file system.
+elif os.environ.get('VERCEL') or not DEBUG:
+    # Strict check for Vercel or Production
     from django.core.exceptions import ImproperlyConfigured
     raise ImproperlyConfigured(
         "DATABASE_URL or POSTGRES_URL environment variable is missing. "
-        "Vercel deployment requires a persistent PostgreSQL database. "
-        "Please add a DATABASE_URL to your Vercel Project Settings."
+        "Vercel deployment requires a persistent PostgreSQL database."
     )
 else:
     # Local development fallback
