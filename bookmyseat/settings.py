@@ -83,14 +83,32 @@ WSGI_APPLICATION = 'bookmyseat.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 # Database configuration
-# Prioritize Vercel's POSTGRES_URL, then DATABASE_URL, then local SQLite
-DATABASE_URL = config('POSTGRES_URL', default=config('DATABASE_URL', default=None))
+# ------------------------------------------------------------------------------
+# In production (Vercel), we MUST have a persistent database URL.
+# We try multiple common Vercel/Heroku environment variables.
+DATABASE_URL = config('POSTGRES_URL', 
+               default=config('DATABASE_URL', 
+               default=config('POSTGRES_URL_NON_POOLING', 
+               default=None)))
 
 if DATABASE_URL:
+    # Ensure the URL is correctly formatted for dj-database-url
+    # If Vercel provides 'postgres://', dj-database-url handles it.
     DATABASES = {
         'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600, conn_health_checks=True)
     }
+elif os.environ.get('VERCEL') == '1' or not DEBUG:
+    # If we are on Vercel or in production mode but no DB URL is found,
+    # we raise an error to prevent falling back to local SQLite which 
+    # will always fail on Vercel's read-only file system.
+    from django.core.exceptions import ImproperlyConfigured
+    raise ImproperlyConfigured(
+        "DATABASE_URL or POSTGRES_URL environment variable is missing. "
+        "Vercel deployment requires a persistent PostgreSQL database. "
+        "Please add a DATABASE_URL to your Vercel Project Settings."
+    )
 else:
+    # Local development fallback
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
