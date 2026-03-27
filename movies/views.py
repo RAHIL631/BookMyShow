@@ -89,6 +89,12 @@ def booking_success(request, booking_ids):
         'theater': bookings[0].theater
     })
 
+from django.core.management import call_command
+from django.http import HttpResponse
 
-
-
+def run_migrations(request):
+    try:
+        call_command('migrate', interactive=False)
+        return HttpResponse("<h1>Success!</h1><p>Database migrations complete. <a href='/'>Go to Home (You may need to refresh twice)</a></p>")
+    except Exception as e:
+        return HttpResponse(f"<h1>Error!</h1><p>{str(e)}</p>")
