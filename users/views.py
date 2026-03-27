@@ -5,15 +5,21 @@ from django.contrib.auth import login,authenticate
 from django.contrib.auth.decorators import login_required
 from movies.models import Movie , Booking
 
+from django.db import OperationalError
+
 def home(request):
-    context = {
-        'recommended_movies': Movie.objects.filter(category='movie')[:4],
-        'events': Movie.objects.filter(category='event')[:4],
-        'plays': Movie.objects.filter(category='play')[:4],
-        'sports': Movie.objects.filter(category='sport')[:4],
-        'activities': Movie.objects.filter(category='activity')[:4],
-    }
-    return render(request, 'home.html', context)
+    try:
+        context = {
+            'recommended_movies': Movie.objects.filter(category='movie')[:4],
+            'events': Movie.objects.filter(category='event')[:4],
+            'plays': Movie.objects.filter(category='play')[:4],
+            'sports': Movie.objects.filter(category='sport')[:4],
+            'activities': Movie.objects.filter(category='activity')[:4],
+        }
+        return render(request, 'home.html', context)
+    except OperationalError:
+        # If database is not configured (common on first Vercel deploy)
+        return render(request, 'errors/db_not_configured.html')
 def register(request):
     if request.method == 'POST':
         form=UserRegisterForm(request.POST)

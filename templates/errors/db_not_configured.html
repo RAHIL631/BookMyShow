@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Setup Required - BookMySeat</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body { background: #0f172a; color: white; font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+        .glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 40px; max-width: 600px; text-align: center; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); transition: transform 0.3s ease; }
+        h1 { font-weight: 800; margin-bottom: 20px; background: linear-gradient(45deg, #ff4d4d, #f9cb28); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        p { color: #94a3b8; font-size: 18px; line-height: 1.6; }
+        .setup-steps { text-align: left; margin: 30px 0; }
+        .step { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 12px; margin-bottom: 10px; }
+        .step b { color: #f9cb28; }
+        .btn-primary { background: linear-gradient(45deg, #ff4d4d, #f9cb28); border: none; padding: 12px 30px; border-radius: 12px; font-weight: 600; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="glass-card">
+        <h1>Almost Ready! 🚀</h1>
+        <p>BookMySeat is successfully deployed to Vercel, but it needs a <b>PostgreSQL Database</b> to store and show movie data.</p>
+        
+        <div class="setup-steps">
+            <div class="step">
+                1. <b>Create Storage</b>: Go to the <b>Storage</b> tab in your Vercel Dashboard.
+            </div>
+            <div class="step">
+                2. <b>Link Postgres</b>: Create a <b>Vercel Postgres</b> instance and click <b>"Link"</b> to connect it to this project.
+            </div>
+            <div class="step">
+                3. <b>Redeploy</b>: Go to the <b>Deployments</b> tab and click <b>"Redeploy"</b>.
+            </div>
+        </div>
+
+        <p class="small">The application will automatically detect the database and run migrations on next launch.</p>
+        
+        <a href="https://vercel.com/dashboard" target="_blank" class="btn btn-primary">Open Vercel Dashboard</a>
+    </div>
+</body>
+</html>
