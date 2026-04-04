@@ -3,9 +3,10 @@ import django
 import random
 from datetime import datetime, timedelta
 
-# Set up Django environment
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'bookmyseat.settings')
-django.setup()
+# Set up Django environment if run as script
+if __name__ == "__main__":
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'bookmyseat.settings')
+    django.setup()
 
 from movies.models import Movie, Theater, Seat
 

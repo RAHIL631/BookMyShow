@@ -89,12 +89,34 @@ def booking_success(request, booking_ids):
         'theater': bookings[0].theater
     })
 
-from django.core.management import call_command
-from django.http import HttpResponse
 
 def run_migrations(request):
     try:
+        from django.core.management import call_command
+        from django.http import HttpResponse
+        import os
+        
+        # Run Migrations
         call_command('migrate', interactive=False)
-        return HttpResponse("<h1>Success!</h1><p>Database migrations complete. <a href='/'>Go to Home (You may need to refresh twice)</a></p>")
+        
+        # Populate Data if needed
+        from .models import Movie
+        if Movie.objects.count() == 0:
+            try:
+                from populate_db import populate
+                populate()
+            except ImportError:
+                # Fallback if populate_db is not importable
+                pass
+                
+        return HttpResponse("""
+            <div style="font-family: sans-serif; text-align: center; padding: 50px;">
+                <h1 style="color: #10b981;">Success! 🚀</h1>
+                <p>Database migrations and data population are complete.</p>
+                <a href="/" style="display: inline-block; padding: 10px 20px; background: #3b82f6; color: white; text-decoration: none; border-radius: 5px; margin-top: 20px;">Go to Home</a>
+                <p style="font-size: 0.8em; color: #6b7280; margin-top: 20px;">(You may need to refresh the home page twice to see new data)</p>
+            </div>
+        """)
     except Exception as e:
         return HttpResponse(f"<h1>Error!</h1><p>{str(e)}</p>")
+
